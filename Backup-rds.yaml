@@ -1,0 +1,12 @@
+Resources:
+  MyDBInstance:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      DBName: "mydatabase"
+      DBInstanceClass: "db.t2.micro"
+      Engine: "mysql"
+      MasterUsername: "admin"
+      MasterUserPassword: "mypassword"
+      AllocatedStorage: "5"
+      MultiAZ: "false"
+      BackupRetentionPeriod: "30"

@@ -1,0 +1,6 @@
+Resources:
+  MyTopic:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      DisplayName: "My SNS Topic"
+      TopicName: "my-sns-topic"

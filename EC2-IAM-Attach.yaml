@@ -1,0 +1,76 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template to attach an IAM role to an EC2 instance
+Parameters:
+
+  ImageId:
+    Type: String
+    Description: 'Linux 2 AMI for Ireland eu-west-1 Region'
+    Default: 'ami-01a4f99c4ac11b03c'
+  AvailabilityZone:
+    Type: String
+    Description: Availability Zone into which instance will launch
+    Default: ap-south-1a
+  InstanceType:
+    Type: String
+    Description: Choosing  t2 micro because it is free
+    Default: t2.micro
+  KeyName:
+    Description: SSH Keypair to login to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: Test
+
+Resources:
+  DemoInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties: 
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstanceType
+      AvailabilityZone: !Ref AvailabilityZone
+      KeyName: !Ref KeyName
+      IamInstanceProfile: !Ref DemoInstanceProfile
+
+  DemoInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      InstanceProfileName: demo-ec2-instance-profile
+      Path: /
+      Roles: 
+       - !Ref DemoEc2InstanceRole
+  DemoEc2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: demo-ec2-instance-role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+
+  DemoInstanceS3Policy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: DemoS3Policy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - arn:aws:s3:::demo-s3-bucket/*
+              - arn:aws:s3:::demo-s3-bucket
+      Roles:
+        -
+          !Ref DemoEc2InstanceRole
+
+Outputs:
+  DemoInstanceId:
+    Description: Instance Id 
+    Value: !Ref DemoInstance

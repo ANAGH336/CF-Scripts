@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyDBSubnetGroup:
+    Type: 'AWS::RDS::DBSubnetGroup'
+    Properties:
+      DBSubnetGroupName: my-db-subnet-group
+      DBSubnetGroupDescription: 'My DB Subnet Group'
+      SubnetIds:
+        - subnet-049bad67f4a6975e4
+        - subnet-0da85b6456a8f11e9
+  MyDBCluster:
+    Type: 'AWS::RDS::DBCluster'
+    Properties:
+      Engine: aurora
+      EngineVersion: '5.6.10a'
+      MasterUsername: myuser
+      MasterUserPassword: mypassword
+      DatabaseName: mydatabase
+      VpcSecurityGroupIds:
+        - sg-0e1f5b1da7fcb7a49
+      DBSubnetGroupName: !Ref MyDBSubnetGroup
+      ScalingConfiguration:
+        AutoPause: true
+        MaxCapacity: 16
+        MinCapacity: 2

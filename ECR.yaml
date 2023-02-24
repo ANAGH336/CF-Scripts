@@ -1,0 +1,5 @@
+Resources:
+  MyECRRepository:
+    Type: "AWS::ECR::Repository"
+    Properties:
+      RepositoryName: "my-ecr-repo"

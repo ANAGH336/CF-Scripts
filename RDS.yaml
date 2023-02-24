@@ -1,0 +1,11 @@
+Resources:
+  MyDB:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      DBInstanceClass: db.t2.micro
+      Engine: postgres
+      EngineVersion: "12.7"
+      DBName: mydb
+      MasterUsername: myuser
+      MasterUserPassword: mypassword
+      AllocatedStorage: 20

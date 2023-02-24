@@ -1,0 +1,17 @@
+Resources:
+  MyHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: mydomain.com.
+      HostedZoneConfig:
+        Comment: "This is my hosted zone."
+
+  MyRecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Ref MyHostedZone
+      Name: myrecord.mydomain.com.
+      Type: A
+      TTL: '300'
+      ResourceRecords:
+        - 10.0.0.1

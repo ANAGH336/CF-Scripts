@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: my-launch-template
+      ImageId: ami-0e742cca61fb65051
+      InstanceType: t2.micro
+      KeyName: Test
+      SecurityGroupIds:
+        - sg-0754dddfc44a09fe4
+      UserData: !Base64 |
+        #!/bin/bash
+        echo "Hello World"
+
+  MyAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: my-auto-scaling-group
+      LaunchTemplate:
+        LaunchTemplateName: my-launch-template
+      MinSize: 1
+      MaxSize: 3
+      DesiredCapacity: 2
+      VPCZoneIdentifier:
+        - subnet-06b188faa05689e36
+        - subnet-0da85b6456a8f11e9
+      Tags:
+        - Key: Name
+          Value: my-auto-scaling-group
+          PropagateAtLaunch: true

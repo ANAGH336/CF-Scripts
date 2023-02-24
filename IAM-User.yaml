@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  IAMUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName: 'Anagh-User'
+
+  IAMAccessKey:
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName: !Ref IAMUser
+      Serial: 1
+
+Outputs:
+  AccessKeyId:
+    Value: !Ref IAMAccessKey
+    Export:
+      Name: !Sub '${AWS::StackName}-AccessKeyId'
+
+  SecretAccessKey:
+    Value: !GetAtt [IAMAccessKey, SecretAccessKey]
+    Export:
+      Name: !Sub '${AWS::StackName}-SecretAccessKey'

@@ -1,0 +1,5 @@
+Resources:
+  MyHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: anagh.com

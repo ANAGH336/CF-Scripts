@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyScalableTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      MaxCapacity: 10
+      MinCapacity: 2
+      ResourceId: "service/my-service"
+      RoleARN: "arn:aws:iam::817493965393:role/my-scalable-target-role"
+      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: ecs
+
+  MyScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: my-scaling-policy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref MyScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECS_SERVICE_AVERAGE_CPU_UTILIZATION
+        TargetValue: 80.0

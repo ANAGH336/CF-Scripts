@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  IAMGroup:
+    Type: 'AWS::IAM::Group'
+    Properties:
+      GroupName: 'example-group'
+
+  IAMRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+      - PolicyName: 'example-policy'
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - 's3:ListBucket'
+            Resource: 'arn:aws:s3:::example-bucket'
+
+  IAMRolePolicyAttachment:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: 'example-policy'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - 's3:ListBucket'
+          Resource: 'arn:aws:s3:::example-bucket'
+      Roles:
+      - !Ref IAMRole
+
+Outputs:
+  IAMRoleARN:
+    Value: !GetAtt [IAMRole, Arn]
+    Export:
+      Name: !Sub '${AWS::StackName}-IAMRoleARN'

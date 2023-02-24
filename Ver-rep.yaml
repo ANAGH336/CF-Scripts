@@ -1,0 +1,59 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  SourceBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+  DestinationBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+  ReplicationRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: s3.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: ReplicationPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:GetReplicationConfiguration'
+                  - 's3:ListBucket'
+                  - 's3:GetObjectVersion'
+                  - 's3:GetObjectVersionTagging'
+                Resource:
+                  - !GetAtt SourceBucket.Arn
+                  - !Sub '${DestinationBucket.Arn}/*'
+  ReplicationConfig:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref DestinationBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !GetAtt ReplicationRole.Arn
+            Action:
+              - 's3:GetObjectVersion'
+              - 's3:GetObjectVersionTagging'
+            Resource: !Sub '${DestinationBucket.Arn}/*'
+Outputs:
+  SourceBucketName:
+    Value: !Ref SourceBucket
+    Description: Name of the source bucket
+  DestinationBucketName:
+    Value: !Ref DestinationBucket
+    Description: Name of the destination bucket

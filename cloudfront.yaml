@@ -1,0 +1,30 @@
+Resources:
+  MyBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: mysthree-bucket-cf
+      AccessControl: Private
+
+  MyDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt MyBucket.DomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+        Enabled: true
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+          MinTTL: 86400
+        ViewerCertificate:
+          AcmCertificateArn: arn:aws:acm:us-east-1:817493965393:certificate/abc12345-6789-0123-4567-8901abcdef
+          SslSupportMethod: sni-only
+        Aliases:

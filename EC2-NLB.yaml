@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-01a4f99c4ac11b03c
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - !Ref InstanceSecurityGroup
+      KeyName: Test
+      UserData: !Base64 |
+        #!/bin/bash
+        echo "Hello World" > /var/www/html/index.html
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+  NLB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: my-nlb
+      Scheme: internet-facing
+      Type: network
+      Subnets:
+        - subnet-049bad67f4a6975e4
+        - subnet-0da85b6456a8f11e9
+      SecurityGroups:
+        - !Ref NLBSecurityGroup
+  NLBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref NLB
+      Protocol: TCP
+      Port: 80
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: my-target-group
+      Protocol: TCP
+      Port: 80
+      TargetType: instance
+      VpcId: vpc-01414fca934cc9e9c
+  NLBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable access to NLB listener
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref InstanceSecurityGroup
+        - IpProtocol: tc"
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref NLBSecurityGroup

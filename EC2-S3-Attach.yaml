@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-01a4f99c4ac11b03c
+      InstanceType: t2.micro
+      IamInstanceProfile: !Ref MyIAMRole
+  MyIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: MyS3AccessPolicy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                  - s3:GetObject
+                Resource: arn:aws:s3:::my-bucket

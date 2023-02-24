@@ -1,0 +1,14 @@
+Resources:
+  MyDBInstance:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      AllocatedStorage: "20"
+      DBInstanceClass: "db.t3.micro"
+      Engine: "mysql"
+      EngineVersion: "5.7"
+      MasterUsername: "MyUsername"
+      MasterUserPassword: "MyPassword"
+      DBInstanceIdentifier: "MyDBInstance"
+      DBName: "MyDatabase"
+      StorageEncrypted: "true"
+      KmsKeyId: "arn:aws:kms:ap-south-1:817493965393:key/1234abcd-12ab-34cd-56ef-1234567890ab"

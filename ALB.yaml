@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: my-load-balancer
+      Subnets:
+        - subnet-049bad67f4a6975e4
+        - subnet-0da85b6456a8f11e9
+      SecurityGroups:
+        - sg-0e1f5b1da7fcb7a49
+        - sg-0754dddfc44a09fe4
+      Type: application

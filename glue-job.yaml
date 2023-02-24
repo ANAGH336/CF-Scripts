@@ -1,0 +1,13 @@
+Resources:
+  MyGlueJob:
+    Type: "AWS::Glue::Job"
+    Properties:
+      Name: "my-glue-job"
+      Command:
+        Name: glueetl
+        ScriptLocation: s3://my-bucket/my-glue-job-script.py
+      DefaultArguments:
+        "--job-language": "python"
+        "--job-bookmark-option": "job-bookmark-disable"
+        "--TempDir": "s3://my-bucket/glue-temp-dir/"
+      Role: "arn:aws:iam::817493965393:role/my-glue-role"

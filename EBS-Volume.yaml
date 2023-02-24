@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create an EC2 instance with multiple EBS volumes
+Resources:
+  MyEC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: ami-01a4f99c4ac11b03c
+      InstanceType: t2.micro
+      KeyName: Test
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: "8"
+            VolumeType: "gp2"
+        - DeviceName: /dev/xvdb
+          Ebs:
+            VolumeSize: "16"
+            VolumeType: "gp2"
+        - DeviceName: /dev/xvdc
+          Ebs:
+            VolumeSize: "32"
+            VolumeType: "gp2"

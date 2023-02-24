@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-01a4f99c4ac11b03c
+      InstanceType: t2.micro
+      KeyName: Test
+      SecurityGroupIds:
+        - sg-0e1f5b1da7fcb7a49
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          echo "Hello World" > /var/www/html/index.html
+
+  MyLoadBalancer:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      Name: my-load-balancer
+      Subnets:
+        - subnet-049bad67f4a6975e4
+        - subnet-0da85b6456a8f11e9
+      SecurityGroups:
+        - sg-0e1f5b1da7fcb7a49
+      Type: application
+      Tags:
+        - Key: Name
+          Value: my-load-balancer
+
+  MyListener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref MyTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref MyLoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  MyTargetGroup:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 10
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Name: my-target-group
+      Port: 80
+      Protocol: HTTP
+      TargetType: instance
